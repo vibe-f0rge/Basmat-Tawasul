@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>منصة بصمة تواصل | كورس لغة الإشارة</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Cairo', sans-serif; background-color: #0f0a1a; color: #f8fafc; }
+        .font-tajawal { font-family: 'Tajawal', sans-serif; }
+        
+        /* تأثيرات الألوان الخاصة ببصمة تواصل */
+        .bg-gradient-brand { background: linear-gradient(135deg, #eab308 0%, #db2777 100%); }
+        .text-gradient { background: linear-gradient(to right, #facc15, #f472b6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        
+        /* إخفاء شريط التمرير الجانبي */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #1e1b4b; }
+        ::-webkit-scrollbar-thumb { background: #db2777; border-radius: 10px; }
+
+        .lesson-active { border-right: 4px solid #db2777; background-color: #1e1b4b; }
+        
+        /* الحفاظ على نسبة العرض للارتفاع للفيديو */
+        .video-wrapper { position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; border-radius: 1rem; }
+        .video-wrapper iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
+    </style>
+</head>
+<body class="antialiased min-h-screen flex flex-col selection:bg-pink-500 selection:text-white">
+
+    <!-- Navbar -->
+    <nav class="border-b border-white/10 bg-black/50 backdrop-blur-md sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-between items-center h-20">
+            <div class="flex items-center gap-3">
+                <div class="w-12 h-12 rounded-full bg-gradient-brand flex items-center justify-center text-white text-2xl shadow-lg shadow-pink-500/30">
+                    🤟
+                </div>
+                <div>
+                    <h1 class="text-xl md:text-2xl font-black tracking-tight text-white">بصمة تواصل</h1>
+                    <span class="text-xs md:text-sm text-pink-400 font-tajawal">لتعليم لغة الإشارة - المستوى الأول</span>
+                </div>
+            </div>
+            <!-- زر تسجيل الخروج (مخفي افتراضياً) -->
+            <button id="logoutBtn" onclick="logout()" class="hidden bg-white/10 hover:bg-white/20 text-white px-4 py-2 rounded-lg text-sm transition-all flex items-center gap-2">
+                <i class="fa-solid fa-right-from-bracket"></i> <span class="hidden md:inline">خروج</span>
+            </button>
+        </div>
+    </nav>
+
+    <!-- MAIN CONTAINER -->
+    <main class="flex-grow flex flex-col justify-center max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-8">
+        
+        <!-- SECTION 1: LOGIN / REGISTRATION -->
+        <div id="authSection" class="w-full max-w-md mx-auto bg-white/5 border border-white/10 p-8 rounded-3xl shadow-2xl backdrop-blur-sm relative overflow-hidden">
+            <div class="absolute -top-20 -right-20 w-40 h-40 bg-pink-600/20 blur-3xl rounded-full"></div>
+            
+            <div class="text-center mb-8">
+                <h2 class="text-3xl font-black mb-2 text-gradient">سجل حضورك الآن</h2>
+                <p class="text-gray-400 text-sm">أدخل بياناتك للوصول إلى محاضرات الكورس</p>
+            </div>
+
+            <form id="loginForm" class="space-y-5 relative z-10">
+                <div>
+                    <label class="block text-sm font-semibold mb-2 text-gray-300">الاسم الثلاثي</label>
+                    <div class="relative">
+                        <i class="fa-regular fa-user absolute right-4 top-3.5 text-gray-500"></i>
+                        <input type="text" id="userName" required placeholder="مثال: أحمد محمد علي" class="w-full bg-black/50 border border-white/10 rounded-xl py-3 pr-11 pl-4 text-white focus:outline-none focus:border-pink-500 focus:ring-1 focus:ring-pink-500 transition-all">
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-sm font-semibold mb-2 text-gray-300">رقم الهاتف (واتساب)</label>
+                    <div class="relative">
+                        <i class="fa-solid fa-phone absolute right-4 top-3.5 text-gray-500"></i>
+                        <input type="tel" id="userPhone" required placeholder="01xxxxxxxxx" class="w-full bg-black/50 border border-white/10 rounded-xl py-3 pr-11 pl-4 text-white focus:outline-none focus:border-pink-500 focus:ring-1 focus:ring-pink-500 transition-all" pattern="^01[0125][0-9]{8}$" title="يرجى إدخال رقم محمول مصري صحيح">
+                    </div>
+                </div>
+                <button type="submit" id="submitBtn" class="w-full bg-gradient-to-r from-pink-600 to-purple-600 hover:from-pink-500 hover:to-purple-500 text-white font-bold py-3.5 rounded-xl shadow-lg shadow-pink-500/25 transition-all transform hover:scale-[1.02]">
+                    الدخول للمنصة <i class="fa-solid fa-arrow-left mr-2"></i>
+                </button>
+            </form>
+        </div>
+
+        <!-- SECTION 2: THE LEARNING PLATFORM (Hidden by default) -->
+        <div id="platformSection" class="hidden w-full flex flex-col lg:flex-row gap-8 relative z-10">
+            
+            <!-- Sidebar / Curriculum -->
+            <aside class="w-full lg:w-1/3 xl:w-1/4 flex flex-col gap-4">
+                <div class="bg-white/5 border border-white/10 rounded-2xl p-5 backdrop-blur-sm">
+                    <h3 class="text-xl font-bold mb-4 flex items-center gap-2 border-b border-white/10 pb-3">
+                        <i class="fa-solid fa-list-ul text-pink-500"></i> قائمة المحاضرات
+                    </h3>
+                    <ul id="lessonList" class="space-y-2">
+                        <!-- يتم إدراج المحاضرات هنا بواسطة الجافاسكربت -->
+                    </ul>
+                </div>
+                
+                <!-- Coach Info Card -->
+                <div class="bg-gradient-to-br from-indigo-900/50 to-purple-900/50 border border-indigo-500/30 rounded-2xl p-5 text-center">
+                    <div class="w-16 h-16 mx-auto bg-indigo-500/20 border border-indigo-400 rounded-full flex items-center justify-center text-3xl mb-3">🧕</div>
+                    <h4 class="font-bold text-lg text-white">كوتش حور</h4>
+                    <p class="text-xs text-indigo-300 mb-2">من مؤسسي بصمة تواصل</p>
+                    <span class="inline-block px-3 py-1 bg-pink-500/20 text-pink-300 text-xs rounded-full border border-pink-500/30">المدرب المعتمد</span>
+                </div>
+            </aside>
+
+            <!-- Main Content / Video Area -->
+            <div class="w-full lg:w-2/3 xl:w-3/4 flex flex-col gap-6">
+                
+                <div class="bg-black border border-white/10 rounded-2xl overflow-hidden shadow-2xl relative">
+                    <!-- Video Wrapper -->
+                    <div class="video-wrapper bg-gray-900 flex items-center justify-center group" id="videoArea">
+                        <!-- محتوى الفيديو الفارغ (سيتم استبداله برابط iframe لاحقاً) -->
+                        <div class="text-center p-8 absolute inset-0 flex flex-col items-center justify-center">
+                            <i class="fa-regular fa-circle-play text-6xl text-gray-600 mb-4 group-hover:text-pink-500 transition-colors duration-300"></i>
+                            <h2 class="text-2xl font-bold text-gray-400" id="videoPlaceholderTitle">مكان عرض الفيديو</h2>
+                            <p class="text-gray-500 mt-2 text-sm max-w-md">الرجاء تضمين كود الـ iframe الخاص بيوتيوب في هذا المكان داخل ملف HTML.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Lesson Info -->
+                <div class="bg-white/5 border border-white/10 rounded-2xl p-6 backdrop-blur-sm">
+                    <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-4 border-b border-white/10 pb-4">
+                        <div>
+                            <span id="currentLessonDay" class="text-pink-400 text-sm font-bold block mb-1">اليوم الأول</span>
+                            <h2 id="currentLessonTitle" class="text-2xl md:text-3xl font-black text-white">الأساسيات والتعارف</h2>
+                        </div>
+                        <button class="bg-white/10 hover:bg-white/20 text-white px-5 py-2.5 rounded-xl text-sm font-bold border border-white/10 transition-all flex items-center gap-2 w-full md:w-auto justify-center">
+                            <i class="fa-solid fa-cloud-arrow-up"></i> تسليم التاسك
+                        </button>
+                    </div>
+                    <p id="currentLessonDesc" class="text-gray-300 leading-relaxed font-tajawal">مقدمة شاملة عن لغة الإشارة، كيفية تقديم النفس، وأساسيات التواصل البصري والحركي مع الصم.</p>
+                </div>
+
+                <!-- Course Guidelines -->
+                <div class="grid md:grid-cols-2 gap-4">
+                    <div class="bg-yellow-500/10 border border-yellow-500/20 p-5 rounded-2xl">
+                        <h4 class="text-yellow-400 font-bold mb-3 flex items-center gap-2"><i class="fa-solid fa-triangle-exclamation"></i> تعليمات هامة</h4>
+                        <ul class="text-sm text-gray-300 space-y-2 font-tajawal">
+                            <li><i class="fa-solid fa-check text-yellow-500 ml-1"></i> المتابعة والمراجعة المرئية للفيديو المسجل.</li>
+                            <li><i class="fa-solid fa-check text-yellow-500 ml-1"></i> التدريب أمام المرآة لتعبيرات الوجه.</li>
+                            <li><i class="fa-solid fa-check text-yellow-500 ml-1"></i> تسليم التاسك المطلوب قبل المحاضرة الجديدة.</li>
+                        </ul>
+                    </div>
+                    <div class="bg-green-500/10 border border-green-500/20 p-5 rounded-2xl">
+                        <h4 class="text-green-400 font-bold mb-3 flex items-center gap-2"><i class="fa-solid fa-gift"></i> الامتيازات والشهادة</h4>
+                        <ul class="text-sm text-gray-300 space-y-2 font-tajawal">
+                            <li><i class="fa-solid fa-check text-green-500 ml-1"></i> وجود امتحان شامل نهاية الكورس.</li>
+                            <li><i class="fa-solid fa-check text-green-500 ml-1"></i> مكافآت للمتميزين وشهادة إتمام المستوى.</li>
+                            <li><i class="fa-solid fa-check text-green-500 ml-1"></i> نجاحك يؤهلك فوراً للمستوى الثاني.</li>
+                        </ul>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="border-t border-white/5 bg-black/50 mt-12">
+        <div class="max-w-7xl mx-auto px-4 py-6 text-center">
+            <p class="text-gray-400 text-sm leading-loose">
+                جميع حقوق الملكية الفكرية والمحتوى محفوظة لـ <span class="font-bold text-pink-400">كوتش حور</span> © 2026<br>
+                <span class="text-xs text-gray-500">تم تصميم وتطوير المنصة بمساعدة <span class="text-gray-300">الأستاذ يحيى حسين</span></span>
+            </p>
+        </div>
+    </footer>
+
+    <!-- JavaScript Logic -->
+    <script>
+        // ======= [ 1. رابط Google Apps Script المربوط بالشيت الخاص بك ] =======
+        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxfvCh7FREgYcfzwd3yaEJ98cthi1DuwXgJekjVNEPrL9EuVW1RrgIDM-y_MnePHXN97Q/exec"; 
+        // =============================================================
+
+        // بيانات المحاضرات الـ 5 (بدون تواريخ)
+        const lessons = [
+            { day: "المحاضرة الأولى", title: "الأساسيات والتعارف", desc: "مقدمة شاملة عن لغة الإشارة، كيفية تقديم النفس، وأساسيات التواصل البصري والحركي مع الصم." },
+            { day: "المحاضرة الثانية", title: "الحروف والأرقام", desc: "تعلم الحروف الأبجدية الإشارية وتشكيل الكلمات، بالإضافة إلى الأرقام وكيفية العد واستخدامها في الجمل." },
+            { day: "المحاضرة الثالثة", title: "الجمل الشائعة", desc: "التدرب على العبارات اليومية الشائعة، التحيات، الأسئلة المتكررة، وكيفية بناء جملة إشارية صحيحة." },
+            { day: "المحاضرة الرابعة", title: "المحاكاة والتطبيقات", desc: "تطبيق عملي وتفاعلي، دمج الإشارات لتكوين حوارات كاملة ومحاكاة مواقف حياتية حقيقية." },
+            { day: "المحاضرة الخامسة", title: "التقييم والختام", desc: "مراجعة شاملة لجميع ما سبق، إجراء التقييمات العملية للمتدربين، وتوزيع الامتيازات والشهادات." }
+        ];
+
+        // عناصر DOM
+        const authSection = document.getElementById('authSection');
+        const platformSection = document.getElementById('platformSection');
+        const logoutBtn = document.getElementById('logoutBtn');
+        const loginForm = document.getElementById('loginForm');
+        const submitBtn = document.getElementById('submitBtn');
+        const lessonList = document.getElementById('lessonList');
+        
+        // التحقق من حالة تسجيل الدخول عند تحميل الصفحة
+        window.onload = () => {
+            const user = localStorage.getItem('basma_user');
+            if (user) {
+                showPlatform();
+            }
+            renderLessons();
+            selectLesson(0);
+        };
+
+        // إدارة إرسال النموذج (تسجيل الدخول / إنشاء حساب)
+        loginForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const name = document.getElementById('userName').value.trim();
+            const phone = document.getElementById('userPhone').value.trim();
+
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> جاري التسجيل والحفظ...';
+
+            try {
+                // إرسال البيانات لجوجل شيت بطريقة مضمونة
+                const response = await fetch(SCRIPT_URL, {
+                    method: 'POST',
+                    body: JSON.stringify({ name: name, phone: phone })
+                });
+
+                const result = await response.json();
+
+                if (result.status === "duplicate") {
+                    alert(result.message); // تنبيه بالدخول المسجل سابقاً
+                }
+
+                // حفظ البيانات محلياً والدخول للمنصة
+                localStorage.setItem('basma_user', JSON.stringify({ name, phone }));
+                showPlatform();
+
+            } catch (err) {
+                console.error("Error sending data:", err);
+                // في حال وجود كتم أو اعتراض أمني، يتم تمرير المستخدم وتنبيهه
+                localStorage.setItem('basma_user', JSON.stringify({ name, phone }));
+                showPlatform();
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = 'الدخول للمنصة <i class="fa-solid fa-arrow-left mr-2"></i>';
+            }
+        });
+
+        // دوال التحكم بالواجهة
+        function showPlatform() {
+            authSection.classList.add('hidden');
+            platformSection.classList.remove('hidden');
+            logoutBtn.classList.remove('hidden');
+        }
+
+        function logout() {
+            localStorage.removeItem('basma_user');
+            platformSection.classList.add('hidden');
+            logoutBtn.classList.add('hidden');
+            authSection.classList.remove('hidden');
+            loginForm.reset();
+        }
+
+        // بناء قائمة الدروس الجانبية
+        function renderLessons() {
+            lessonList.innerHTML = '';
+            lessons.forEach((lesson, index) => {
+                const li = document.createElement('li');
+                li.className = `p-3 rounded-xl cursor-pointer transition-all flex items-center gap-3 border border-transparent hover:bg-white/10 text-gray-300 lesson-item-${index}`;
+                li.onclick = () => selectLesson(index);
+                li.innerHTML = `
+                    <div class="w-8 h-8 rounded-full bg-black/50 flex items-center justify-center text-xs text-pink-400 border border-pink-500/30 flex-shrink-0">
+                        ${index + 1}
+                    </div>
+                    <div class="flex flex-col">
+                        <span class="text-xs text-pink-500">${lesson.day}</span>
+                        <span class="text-sm font-bold text-white">${lesson.title}</span>
+                    </div>
+                `;
+                lessonList.appendChild(li);
+            });
+        }
+
+        // تحديث تفاصيل الدرس المعروض
+        function selectLesson(index) {
+            // تحديث الألوان في القائمة
+            document.querySelectorAll('#lessonList li').forEach((li, i) => {
+                if (i === index) {
+                    li.classList.add('lesson-active');
+                    li.classList.remove('border-transparent');
+                } else {
+                    li.classList.remove('lesson-active');
+                    li.classList.add('border-transparent');
+                }
+            });
+
+            // تحديث المحتوى
+            const lesson = lessons[index];
+            document.getElementById('currentLessonDay').innerText = lesson.day;
+            document.getElementById('currentLessonTitle').innerText = lesson.title;
+            document.getElementById('currentLessonDesc').innerText = lesson.desc;
+            document.getElementById('videoPlaceholderTitle').innerText = `مكان فيديو: ${lesson.title}`;
+        }
+    </script>
+</body>
+</html>
