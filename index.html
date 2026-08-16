@@ -114,11 +114,6 @@
                     <!-- Video Wrapper -->
                     <div class="video-wrapper bg-gray-900 flex items-center justify-center group" id="videoArea">
                         <!-- محتوى الفيديو الفارغ (سيتم استبداله برابط iframe لاحقاً) -->
-                        <div class="text-center p-8 absolute inset-0 flex flex-col items-center justify-center">
-                            <i class="fa-regular fa-circle-play text-6xl text-gray-600 mb-4 group-hover:text-pink-500 transition-colors duration-300"></i>
-                            <h2 class="text-2xl font-bold text-gray-400" id="videoPlaceholderTitle">مكان عرض الفيديو</h2>
-                            <p class="text-gray-500 mt-2 text-sm max-w-md">الرجاء تضمين كود الـ iframe الخاص بيوتيوب في هذا المكان داخل ملف HTML.</p>
-                        </div>
                     </div>
                 </div>
 
@@ -176,13 +171,16 @@
         const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxfvCh7FREgYcfzwd3yaEJ98cthi1DuwXgJekjVNEPrL9EuVW1RrgIDM-y_MnePHXN97Q/exec"; 
         // =============================================================
 
-        // بيانات المحاضرات الـ 5 (بدون تواريخ)
+        // قائمة الدروس الحقيقية 
         const lessons = [
-            { day: "المحاضرة الأولى", title: "الأساسيات والتعارف", desc: "مقدمة شاملة عن لغة الإشارة، كيفية تقديم النفس، وأساسيات التواصل البصري والحركي مع الصم." },
-            { day: "المحاضرة الثانية", title: "الحروف والأرقام", desc: "تعلم الحروف الأبجدية الإشارية وتشكيل الكلمات، بالإضافة إلى الأرقام وكيفية العد واستخدامها في الجمل." },
-            { day: "المحاضرة الثالثة", title: "الجمل الشائعة", desc: "التدرب على العبارات اليومية الشائعة، التحيات، الأسئلة المتكررة، وكيفية بناء جملة إشارية صحيحة." },
-            { day: "المحاضرة الرابعة", title: "المحاكاة والتطبيقات", desc: "تطبيق عملي وتفاعلي، دمج الإشارات لتكوين حوارات كاملة ومحاكاة مواقف حياتية حقيقية." },
-            { day: "المحاضرة الخامسة", title: "التقييم والختام", desc: "مراجعة شاملة لجميع ما سبق، إجراء التقييمات العملية للمتدربين، وتوزيع الامتيازات والشهادات." }
+            { day: "الدرس الأول", title: "التعريف بالأصم", youtubeId: "A9WW05cvJmk", desc: "مقدمة هامة للتعرف على عالم الصم وكيفية التواصل المبدئي معهم." },
+            { day: "الدرس الثاني", title: "حروف الإشارة", youtubeId: "kIEJ4jWNSNo", desc: "تعلم الحروف الأبجدية بلغة الإشارة وتشكيل الكلمات خطوة بخطوة." },
+            { day: "الدرس الثالث", title: "الملابس", youtubeId: "GzCB1IxZGp8", desc: "كيفية التعبير عن أنواع الملابس المختلفة والأزياء بلغة الإشارة." },
+            { day: "الدرس الرابع", title: "الألوان", youtubeId: "JTAwOs44GzA", desc: "تعلم أسماء الألوان الأساسية والفرعية وكيفية الإشارة إليها." },
+            { day: "الدرس الخامس", title: "الحيوانات (1)", youtubeId: "sgo8YINHpFw", desc: "المجموعة الأولى من أسماء الحيوانات الشائعة وإشاراتها." },
+            { day: "الدرس السادس", title: "الحيوانات (2)", youtubeId: "GL8vvZAM0oc", desc: "المجموعة الثانية من أسماء الحيوانات وإشاراتها." },
+            { day: "الدرس السابع", title: "الحيوانات (3)", youtubeId: "pHIyPiGBwh0", desc: "المجموعة الثالثة والأخيرة من أسماء الحيوانات وإشاراتها." },
+            { day: "الدرس الثامن", title: "الطعام", youtubeId: "CEjsr9OrHWk", desc: "تعلم إشارات المأكولات، الأطعمة، والمشروبات المختلفة." }
         ];
 
         // عناصر DOM
@@ -203,7 +201,7 @@
             selectLesson(0);
         };
 
-        // إدارة إرسال النموذج (تسجيل الدخول / إنشاء حساب)
+        // إدارة إرسال النموذج
         loginForm.addEventListener('submit', async (e) => {
             e.preventDefault();
             const name = document.getElementById('userName').value.trim();
@@ -213,7 +211,6 @@
             submitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> جاري التسجيل والحفظ...';
 
             try {
-                // إرسال البيانات لجوجل شيت بطريقة مضمونة
                 const response = await fetch(SCRIPT_URL, {
                     method: 'POST',
                     body: JSON.stringify({ name: name, phone: phone })
@@ -222,16 +219,14 @@
                 const result = await response.json();
 
                 if (result.status === "duplicate") {
-                    alert(result.message); // تنبيه بالدخول المسجل سابقاً
+                    alert(result.message);
                 }
 
-                // حفظ البيانات محلياً والدخول للمنصة
                 localStorage.setItem('basma_user', JSON.stringify({ name, phone }));
                 showPlatform();
 
             } catch (err) {
                 console.error("Error sending data:", err);
-                // في حال وجود كتم أو اعتراض أمني، يتم تمرير المستخدم وتنبيهه
                 localStorage.setItem('basma_user', JSON.stringify({ name, phone }));
                 showPlatform();
             } finally {
@@ -240,7 +235,6 @@
             }
         });
 
-        // دوال التحكم بالواجهة
         function showPlatform() {
             authSection.classList.add('hidden');
             platformSection.classList.remove('hidden');
@@ -255,7 +249,6 @@
             loginForm.reset();
         }
 
-        // بناء قائمة الدروس الجانبية
         function renderLessons() {
             lessonList.innerHTML = '';
             lessons.forEach((lesson, index) => {
@@ -275,9 +268,7 @@
             });
         }
 
-        // تحديث تفاصيل الدرس المعروض
         function selectLesson(index) {
-            // تحديث الألوان في القائمة
             document.querySelectorAll('#lessonList li').forEach((li, i) => {
                 if (i === index) {
                     li.classList.add('lesson-active');
@@ -288,12 +279,23 @@
                 }
             });
 
-            // تحديث المحتوى
             const lesson = lessons[index];
             document.getElementById('currentLessonDay').innerText = lesson.day;
             document.getElementById('currentLessonTitle').innerText = lesson.title;
             document.getElementById('currentLessonDesc').innerText = lesson.desc;
-            document.getElementById('videoPlaceholderTitle').innerText = `مكان فيديو: ${lesson.title}`;
+            
+            // تضمين فيديو اليوتيوب
+            const videoArea = document.getElementById('videoArea');
+            videoArea.innerHTML = `
+                <iframe 
+                    src="https://www.youtube.com/embed/${lesson.youtubeId}?rel=0&modestbranding=1" 
+                    title="${lesson.title}" 
+                    frameborder="0" 
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                    allowfullscreen
+                    class="absolute top-0 left-0 w-full h-full rounded-xl">
+                </iframe>
+            `;
         }
     </script>
 </body>
